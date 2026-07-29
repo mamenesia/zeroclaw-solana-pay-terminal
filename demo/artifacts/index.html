@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ZeroClaw Solana Pay Terminal — Demo</title>
+<style>
+body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;color:#e8eefc}
+.wrap{max-width:900px;margin:0 auto;padding:24px}
+h1{font-size:1.25rem;margin:0 0 8px}
+.muted{color:#93a0b8}
+.card{background:#121a2b;border:1px solid #243049;border-radius:12px;padding:16px;margin:12px 0}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;background:rgba(20,241,149,.12);color:#14f195;border:1px solid rgba(20,241,149,.3);font-size:.75rem}
+pre{white-space:pre-wrap;word-break:break-word;background:#0a1020;padding:12px;border-radius:8px;font-size:.85rem;line-height:1.4}
+a{color:#7dd3fc}
+.pay{color:#14f195;font-weight:600}
+</style></head><body>
+<div class="wrap">
+  <h1>ZeroClaw × Solana Pay Terminal — runnable demo</h1>
+  <p class="muted">Tier-1 use case · watch-only merchant pubkey · no private keys on the agent</p>
+  <span class="badge">demo transcript</span>
+  <div class="card">
+    <div class="muted">Invoice</div>
+    <div>Order <code>ord_20260729T112010Z_486d</code></div>
+    <div class="pay">solana:So11111111111111111111111111111111111111112?amount=0.001&amp;label=Warung%20Mamen&amp;message=Kopi%20susu%20x1</div>
+  </div>
+  <div class="card"><pre id="t"></pre></div>
+  <p class="muted">Repo: <a href="https://github.com/mamenesia/zeroclaw-solana-pay-terminal">mamenesia/zeroclaw-solana-pay-terminal</a>
+  · Listing: <a href="https://superteam.fun/earn/listing/zeroclaw">Superteam Zeroclaw</a></p>
+</div>
+<script>
+const text = "=== ZeroClaw Solana Pay Terminal demo ===\ncustody: watch-only merchant pubkey (no private keys)\n\n$ python3 scripts/create_invoice.py --merchant So11111111111111111111111111111111111111112 --amount 0.001 --label 'Warung Mamen' --message 'Kopi susu x1' --demo --out /tmp/zc_inv.json\n{\"ok\": true, \"schema\": \"zeroclaw-solana-pay-invoice/v1\", \"order_id\": \"ord_20260729T112010Z_486d\", \"merchant\": \"So11111111111111111111111111111111111111112\", \"amount\": 0.001, \"spl_token\": null, \"label\": \"Warung Mamen\", \"message\": \"Kopi susu x1\", \"pay_url\": \"solana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\", \"created_at\": \"2026-07-29T11:20:10.050949+00:00\", \"status\": \"invoiced\", \"demo\": true, \"match\": {\"recipient\": \"So11111111111111111111111111111111111111112\", \"amount_ui\": 0.001, \"spl_token\": null}}\n\n$ cat /tmp/zc_inv.json | python3 -m json.tool\n{\n    \"ok\": true,\n    \"schema\": \"zeroclaw-solana-pay-invoice/v1\",\n    \"order_id\": \"ord_20260729T112010Z_486d\",\n    \"merchant\": \"So11111111111111111111111111111111111111112\",\n    \"amount\": 0.001,\n    \"spl_token\": null,\n    \"label\": \"Warung Mamen\",\n    \"message\": \"Kopi susu x1\",\n    \"pay_url\": \"solana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\",\n    \"created_at\": \"2026-07-29T11:20:10.050949+00:00\",\n    \"status\": \"invoiced\",\n    \"demo\": true,\n    \"match\": {\n        \"recipient\": \"So11111111111111111111111111111111111111112\",\n        \"amount_ui\": 0.001,\n        \"spl_token\": null\n    }\n}\n\nSolana Pay URL:\nsolana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\n\n$ python3 scripts/watch_payment.py --invoice /tmp/zc_inv.json --simulate-paid\n{\"ok\": true, \"status\": \"paid\", \"order_id\": \"ord_20260729T112010Z_486d\", \"signature\": \"SIMULATED_DEMO_SIGNATURE\", \"explorer\": \"https://solscan.io/\", \"matched_at\": \"2026-07-29T11:20:10.203578+00:00\", \"note\": \"simulate-paid flag set \\u2014 not a mainnet proof\"}\n\nChannel message (mock WhatsApp/Telegram):\n[customer] 1 kopi susu\n[agent] Order ord_20260729T112010Z_486d\nItem: Kopi susu x1 \u2014 0.001 SOL (demo)\nPay with Solana Pay:\nsolana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\nI'll confirm here after the transfer lands.\n\n[agent] \u2705 Paid\nsig: SIMULATED_DEMO_SIGNATURE\nhttps://solscan.io/\nOrder ord_20260729T112010Z_486d complete. Terima kasih!\n\n=== demo complete (Tier-1, no keys) ===\n";
+const el = document.getElementById('t');
+let i=0;
+function tick(){
+  i += 3;
+  el.textContent = text.slice(0,i);
+  if(i < text.length) requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body></html>

@@ -1,22 +1,44 @@
-# Superteam submission paste — Zeroclaw × Solana
+# Superteam + Discord submission pack
 
 **Listing:** https://superteam.fun/earn/listing/zeroclaw  
-**Region:** Global (not geo-locked)  
-**Agent access:** HUMAN_ONLY — you submit + post Discord showcase  
-**Reward pool:** 5000 USDG  
+**Region:** Global · **Access:** HUMAN_ONLY (wallet/login required on Superteam + Discord)
 
-## Links
-- **Repo:** https://github.com/mamenesia/zeroclaw-solana-pay-terminal
-- **Showcase write-up:** https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/SHOWCASE.md
-- **Threat model:** https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/docs/THREAT_MODEL.md
+## Ready links (paste these)
+
+| Field | Value |
+|---|---|
+| Repo | https://github.com/mamenesia/zeroclaw-solana-pay-terminal |
+| Live demo (animated transcript) | https://code.mamenesia.com/zeroclaw-demo/ |
+| Showcase write-up | https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/SHOWCASE.md |
+| Threat model | https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/docs/THREAT_MODEL.md |
+| Demo transcript | https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/demo/artifacts/demo-transcript.txt |
+| Invoice sample | https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/demo/artifacts/invoice.json |
 
 ## One-liner
-Tier-1 ZeroClaw shop terminal: chat order → Solana Pay invoice → public-RPC payment watch → in-channel confirm. Watch-only merchant pubkey, no agent keys, SOPs + skill, runnable demo without WASM.
+Tier-1 ZeroClaw shop terminal: chat order → Solana Pay invoice → public-RPC watch → in-channel confirm. Watch-only merchant pubkey, no agent keys.
 
-## Form fields
-1. **Demo video link** — record ≤3 min from `SHOWCASE.md` outline (YouTube/Drive)
-2. **One-pager** — `SHOWCASE.md`
-3. **Supporting material** — this repo
+## Superteam form
+1. **Demo video** — record ≤3 min screen of https://code.mamenesia.com/zeroclaw-demo/ + optional phone Solana Pay open (Loom/Drive/YouTube unlisted)
+2. **One-pager** — SHOWCASE.md URL above
+3. **Supporting** — repo URL
 
-## Discord (required)
-Post the same package in ZeroClaw Discord **#solana-bounty**.
+## Discord #solana-bounty
+Paste:
+
+```
+Solana Pay shop terminal on ZeroClaw (Tier 1, watch-only)
+
+Repo: https://github.com/mamenesia/zeroclaw-solana-pay-terminal
+Live demo: https://code.mamenesia.com/zeroclaw-demo/
+Showcase: https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/SHOWCASE.md
+
+Use case: family warung takes order on chat → issues Solana Pay URL → watches RPC → confirms paid in-channel.
+Custody: merchant receive pubkey only — agent never holds keys.
+```
+
+## Agent cannot complete
+- Superteam account login / wallet connect
+- ZeroClaw Discord post (your Discord session)
+- Phone wallet screen recording (your device)
+
+Everything else in the package is ready.

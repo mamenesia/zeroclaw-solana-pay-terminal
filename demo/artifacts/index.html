@@ -3,38 +3,70 @@
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>ZeroClaw Solana Pay Terminal — Demo</title>
 <style>
-body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0b1220;color:#e8eefc}
-.wrap{max-width:900px;margin:0 auto;padding:24px}
-h1{font-size:1.25rem;margin:0 0 8px}
-.muted{color:#93a0b8}
-.card{background:#121a2b;border:1px solid #243049;border-radius:12px;padding:16px;margin:12px 0}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;background:rgba(20,241,149,.12);color:#14f195;border:1px solid rgba(20,241,149,.3);font-size:.75rem}
-pre{white-space:pre-wrap;word-break:break-word;background:#0a1020;padding:12px;border-radius:8px;font-size:.85rem;line-height:1.4}
+:root{--bg:#0b1220;--card:#121a2b;--text:#e8eefc;--muted:#93a0b8;--accent:#14f195;--line:#243049;--sol:#9945ff}
+*{box-sizing:border-box}
+body{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:linear-gradient(180deg,#0b1220,#0e1630);color:var(--text)}
+.wrap{max-width:920px;margin:0 auto;padding:24px}
+h1{font-size:1.35rem;margin:0 0 6px}
+.muted{color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.badge{padding:4px 10px;border-radius:999px;background:rgba(20,241,149,.12);color:var(--accent);border:1px solid rgba(20,241,149,.28);font-size:.75rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+pre{white-space:pre-wrap;word-break:break-word;background:#0a1020;padding:14px;border-radius:10px;font-size:.82rem;line-height:1.45;min-height:280px;margin:0}
+.pay{color:var(--accent);font-weight:600;word-break:break-all}
 a{color:#7dd3fc}
-.pay{color:#14f195;font-weight:600}
+.btn{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:8px;background:rgba(153,69,255,.25);border:1px solid rgba(153,69,255,.45);color:#fff;text-decoration:none;font-size:.85rem;cursor:pointer}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:10px}
+.step{background:#0a1020;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:.8rem}
+.step.on{border-color:var(--accent);box-shadow:0 0 0 1px rgba(20,241,149,.25)}
+.bar{height:4px;background:#0a1020;border-radius:99px;overflow:hidden;margin:10px 0 0}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--sol));transition:width .2s}
 </style></head><body>
 <div class="wrap">
-  <h1>ZeroClaw × Solana Pay Terminal — runnable demo</h1>
-  <p class="muted">Tier-1 use case · watch-only merchant pubkey · no private keys on the agent</p>
-  <span class="badge">demo transcript</span>
+  <h1>ZeroClaw × Solana Pay Terminal</h1>
+  <p class="muted">Tier-1 use case · watch-only merchant pubkey · agent never holds keys</p>
+  <div class="row"><span class="badge">runnable demo</span><span class="badge">no WASM required</span><span class="badge">Superteam Global</span></div>
   <div class="card">
-    <div class="muted">Invoice</div>
-    <div>Order <code>ord_20260729T112010Z_486d</code></div>
-    <div class="pay">solana:So11111111111111111111111111111111111111112?amount=0.001&amp;label=Warung%20Mamen&amp;message=Kopi%20susu%20x1</div>
+    <div class="muted">Live order</div>
+    <div>Order <code>ord_20260729T112010Z_486d</code> · 0.001 SOL demo</div>
+    <div class="pay" id="pay">solana:So11111111111111111111111111111111111111112?amount=0.001&amp;label=Warung%20Mamen&amp;message=Kopi%20susu%20x1</div>
+    <div class="steps">
+      <div class="step" id="s1">1. Create invoice</div>
+      <div class="step" id="s2">2. Share Solana Pay URL</div>
+      <div class="step" id="s3">3. Watch RPC</div>
+      <div class="step" id="s4">4. Confirm in chat</div>
+    </div>
+    <div class="bar"><i id="prog"></i></div>
+    <button class="btn" id="replay" type="button">Replay demo</button>
   </div>
   <div class="card"><pre id="t"></pre></div>
-  <p class="muted">Repo: <a href="https://github.com/mamenesia/zeroclaw-solana-pay-terminal">mamenesia/zeroclaw-solana-pay-terminal</a>
-  · Listing: <a href="https://superteam.fun/earn/listing/zeroclaw">Superteam Zeroclaw</a></p>
+  <p class="muted">
+    Repo: <a href="https://github.com/mamenesia/zeroclaw-solana-pay-terminal">mamenesia/zeroclaw-solana-pay-terminal</a>
+    · Listing: <a href="https://superteam.fun/earn/listing/zeroclaw">Superteam Zeroclaw</a>
+    · Showcase: <a href="https://github.com/mamenesia/zeroclaw-solana-pay-terminal/blob/main/SHOWCASE.md">SHOWCASE.md</a>
+  </p>
 </div>
 <script>
 const text = "=== ZeroClaw Solana Pay Terminal demo ===\ncustody: watch-only merchant pubkey (no private keys)\n\n$ python3 scripts/create_invoice.py --merchant So11111111111111111111111111111111111111112 --amount 0.001 --label 'Warung Mamen' --message 'Kopi susu x1' --demo --out /tmp/zc_inv.json\n{\"ok\": true, \"schema\": \"zeroclaw-solana-pay-invoice/v1\", \"order_id\": \"ord_20260729T112010Z_486d\", \"merchant\": \"So11111111111111111111111111111111111111112\", \"amount\": 0.001, \"spl_token\": null, \"label\": \"Warung Mamen\", \"message\": \"Kopi susu x1\", \"pay_url\": \"solana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\", \"created_at\": \"2026-07-29T11:20:10.050949+00:00\", \"status\": \"invoiced\", \"demo\": true, \"match\": {\"recipient\": \"So11111111111111111111111111111111111111112\", \"amount_ui\": 0.001, \"spl_token\": null}}\n\n$ cat /tmp/zc_inv.json | python3 -m json.tool\n{\n    \"ok\": true,\n    \"schema\": \"zeroclaw-solana-pay-invoice/v1\",\n    \"order_id\": \"ord_20260729T112010Z_486d\",\n    \"merchant\": \"So11111111111111111111111111111111111111112\",\n    \"amount\": 0.001,\n    \"spl_token\": null,\n    \"label\": \"Warung Mamen\",\n    \"message\": \"Kopi susu x1\",\n    \"pay_url\": \"solana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\",\n    \"created_at\": \"2026-07-29T11:20:10.050949+00:00\",\n    \"status\": \"invoiced\",\n    \"demo\": true,\n    \"match\": {\n        \"recipient\": \"So11111111111111111111111111111111111111112\",\n        \"amount_ui\": 0.001,\n        \"spl_token\": null\n    }\n}\n\nSolana Pay URL:\nsolana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\n\n$ python3 scripts/watch_payment.py --invoice /tmp/zc_inv.json --simulate-paid\n{\"ok\": true, \"status\": \"paid\", \"order_id\": \"ord_20260729T112010Z_486d\", \"signature\": \"SIMULATED_DEMO_SIGNATURE\", \"explorer\": \"https://solscan.io/\", \"matched_at\": \"2026-07-29T11:20:10.203578+00:00\", \"note\": \"simulate-paid flag set \\u2014 not a mainnet proof\"}\n\nChannel message (mock WhatsApp/Telegram):\n[customer] 1 kopi susu\n[agent] Order ord_20260729T112010Z_486d\nItem: Kopi susu x1 \u2014 0.001 SOL (demo)\nPay with Solana Pay:\nsolana:So11111111111111111111111111111111111111112?amount=0.001&label=Warung%20Mamen&message=Kopi%20susu%20x1\nI'll confirm here after the transfer lands.\n\n[agent] \u2705 Paid\nsig: SIMULATED_DEMO_SIGNATURE\nhttps://solscan.io/\nOrder ord_20260729T112010Z_486d complete. Terima kasih!\n\n=== demo complete (Tier-1, no keys) ===\n";
 const el = document.getElementById('t');
-let i=0;
-function tick(){
-  i += 3;
-  el.textContent = text.slice(0,i);
-  if(i < text.length) requestAnimationFrame(tick);
+const prog = document.getElementById('prog');
+const steps = [document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
+let timer;
+function run(){
+  clearInterval(timer);
+  let i=0;
+  steps.forEach(s=>s.classList.remove('on'));
+  timer=setInterval(()=>{
+    i += Math.max(2, Math.floor(text.length/180));
+    el.textContent = text.slice(0,i);
+    const p = Math.min(1, i/text.length);
+    prog.style.width = (p*100).toFixed(1)+'%';
+    const idx = Math.min(3, Math.floor(p*4));
+    steps.forEach((s,n)=>s.classList.toggle('on', n<=idx));
+    if(i>=text.length) clearInterval(timer);
+  }, 40);
 }
-tick();
+document.getElementById('replay').onclick=run;
+run();
 </script>
 </body></html>

@@ -1,0 +1,15 @@
+# Drop into ZeroClaw config (illustrative). Adjust paths to your install root.
+# Stock binary — no WASM plugins required (Tier 1).
+
+[agents.shop]
+# skill_bundles = ["shop"]
+
+[skill_bundles.shop]
+directory = "./skills"   # contains solana-pay-terminal/
+
+# Seed via memory tools (do NOT commit real secrets):
+# merchant.pubkey = "<YOUR_RECEIVE_ONLY_PUBKEY>"
+# merchant.shop_name = "Warung Mamen"
+# merchant.currency = "SOL"
+# merchant.catalog = [{ "sku": "KOPI", "name": "Kopi susu", "price": 0.01 }]
+# merchant.daily_notional_cap_usd = 50

@@ -1,0 +1,8 @@
+name = "solana-pay-order"
+description = "Create a Solana Pay invoice for a shop order and notify the channel"
+version = "0.1.0"
+max_concurrent = 3
+admission_policy = "parallel"
+
+[[triggers]]
+type = "manual"

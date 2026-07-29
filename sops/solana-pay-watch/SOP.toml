@@ -1,0 +1,8 @@
+name = "solana-pay-watch"
+description = "Poll public RPC until Solana Pay transfer matches invoice or timeout"
+version = "0.1.0"
+max_concurrent = 5
+admission_policy = "parallel"
+
+[[triggers]]
+type = "manual"
